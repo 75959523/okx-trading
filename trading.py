@@ -1,12 +1,67 @@
 from api_client import send_request
+from utils import calculate_size, adjust_price_to_tick
+
+# 计算止损价格的通用逻辑
+def calculate_stop_loss_price(pos_side, leverage, current_price, tick_size):
+    if pos_side == "long":
+        # 做多时的止损价格（市场下跌）
+        if leverage == 10:
+            return adjust_price_to_tick(current_price * 0.94, tick_size)  # 下跌6% 止损
+        elif leverage == 25:
+            return adjust_price_to_tick(current_price * 0.97, tick_size)  # 下跌3% 止损
+        elif leverage == 30:
+            return adjust_price_to_tick(current_price * 0.975, tick_size)  # 下跌2.5% 止损
+        else:
+            return adjust_price_to_tick(current_price * 0.95, tick_size)  # 默认下跌5% 止损
+    elif pos_side == "short":
+        # 做空时的止损价格（市场上涨）
+        if leverage == 10:
+            return adjust_price_to_tick(current_price * 1.06, tick_size)  # 上涨6% 止损
+        elif leverage == 25:
+            return adjust_price_to_tick(current_price * 1.03, tick_size)  # 上涨3% 止损
+        elif leverage == 30:
+            return adjust_price_to_tick(current_price * 1.025, tick_size)  # 上涨2.5% 止损
+        else:
+            return adjust_price_to_tick(current_price * 1.05, tick_size)  # 默认上涨5% 止损
+
+def place_order_for_coin(coin):
+    try:
+        # 获取交易对相关信息
+        current_price, lot_size, tick_size, max_position_limit, ct_val = get_coin_info(coin["inst_id"])
+        set_leverage(coin["inst_id"], coin["leverage"], coin["pos_side"])
+
+        # 计算下单数量
+        size = calculate_size(coin["notional"], coin["leverage"], current_price, ct_val, lot_size, max_position_limit)
+
+        # 计算止损价格
+        sl_price = calculate_stop_loss_price(coin["pos_side"], coin["leverage"], current_price, tick_size)
+
+        # 执行下单
+        side = "buy" if coin["pos_side"] == "long" else "sell"
+        response = place_order_with_tp_sl(coin["inst_id"], side, size, coin["pos_side"], None, sl_price, None)
+
+        # 检查响应
+        if response and response.get("code") == "0":
+            order_data = response.get("data", [{}])[0]
+            ord_id = order_data.get("ordId", "Unknown")
+            s_code = order_data.get("sCode", "Unknown")
+            s_msg = order_data.get("sMsg", "Unknown")
+
+            if s_code == "0":
+                print(f"{coin['inst_id']} 下单成功，订单 ID: {ord_id}")
+            else:
+                print(f"{coin['inst_id']} 下单部分成功，状态码: {s_code}, 消息: {s_msg}")
+        else:
+            print(f"{coin['inst_id']} 下单失败: {response}")
+    except Exception as e:
+        print(f"处理 {coin['inst_id']} 出现问题: {e}")
 
 def get_coin_info(inst_id):
     """
     获取交易对的所有关键信息（市场价格、最小下单单位、最大持仓限额、合约面值）
     """
     current_price = get_market_price(inst_id)
-    lot_size, tick_size = get_instrument_details(inst_id)
-    max_position_limit, ct_val = get_max_position_limit(inst_id)
+    lot_size, tick_size, max_position_limit, ct_val = get_instrument_details(inst_id)
     formatted_price = f"{current_price:.10f}"
     print(f"{inst_id} 开仓价格: {formatted_price}")
     return current_price, lot_size, tick_size, max_position_limit, ct_val
@@ -23,18 +78,14 @@ def get_instrument_details(inst_id):
     request_path = f'/api/v5/public/instruments?instType=SWAP&instId={inst_id}'
     status_code, response = send_request('GET', request_path)
     if status_code == 200 and response['data']:
-        return float(response['data'][0]['lotSz']), float(response['data'][0]['tickSz'])
+        data = response['data'][0]
+        lot_size = float(data['lotSz'])
+        tick_size = float(data['tickSz'])
+        max_position_limit = int(data.get('maxLmtSz', 0))
+        ct_val = float(data['ctVal'])
+        return lot_size, tick_size, max_position_limit, ct_val
     else:
         raise Exception(f"获取交易对详情失败: {response}")
-
-def get_max_position_limit(inst_id):
-    request_path = f'/api/v5/public/instruments?instType=SWAP&instId={inst_id}'
-    status_code, response = send_request('GET', request_path)
-    if status_code == 200 and response['data']:
-        data = response['data'][0]
-        return int(data.get('maxLmtSz', 0)), float(data['ctVal'])
-    else:
-        raise Exception(f"获取最大持仓限额失败: {response}")
 
 def set_leverage(inst_id, lever, pos_side):
     request_path = '/api/v5/account/set-leverage'
