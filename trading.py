@@ -28,13 +28,15 @@ def place_order_for_coin(coin):
     try:
         # 获取交易对相关信息
         current_price, lot_size, tick_size, max_position_limit, ct_val = get_coin_info(coin["inst_id"])
-        set_leverage(coin["inst_id"], coin["leverage"], coin["pos_side"])
 
         # 计算下单数量
         size = calculate_size(coin["notional"], coin["leverage"], current_price, ct_val, lot_size, max_position_limit)
 
         # 计算止损价格
         sl_price = calculate_stop_loss_price(coin["pos_side"], coin["leverage"], current_price, tick_size)
+
+        # 设置杠杆倍数
+        set_leverage(coin["inst_id"], coin["leverage"], coin["pos_side"])
 
         # 执行下单
         side = "buy" if coin["pos_side"] == "long" else "sell"
