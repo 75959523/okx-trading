@@ -1,5 +1,4 @@
-from trading import get_coin_info, set_leverage, place_order_with_tp_sl, place_order_for_coin
-from utils import calculate_size, adjust_price_to_tick
+from trading import place_order_for_coin
 import concurrent.futures
 
 coins = [
