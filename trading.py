@@ -6,7 +6,11 @@ def calculate_stop_loss_price(pos_side, leverage, current_price, tick_size):
     if pos_side == "long":
         # 做多时的止损价格（市场下跌）
         if leverage == 10:
-            return adjust_price_to_tick(current_price * 0.94, tick_size)  # 下跌6% 止损
+            return adjust_price_to_tick(current_price * 0.93, tick_size)  # 下跌7% 止损
+        elif leverage == 15:
+            return adjust_price_to_tick(current_price * 0.955, tick_size)  # 下跌4.5% 止损
+        elif leverage == 20:
+            return adjust_price_to_tick(current_price * 0.96, tick_size)  # 下跌4% 止损
         elif leverage == 25:
             return adjust_price_to_tick(current_price * 0.97, tick_size)  # 下跌3% 止损
         elif leverage == 30:
@@ -16,7 +20,11 @@ def calculate_stop_loss_price(pos_side, leverage, current_price, tick_size):
     elif pos_side == "short":
         # 做空时的止损价格（市场上涨）
         if leverage == 10:
-            return adjust_price_to_tick(current_price * 1.06, tick_size)  # 上涨6% 止损
+            return adjust_price_to_tick(current_price * 1.07, tick_size)  # 上涨7% 止损
+        elif leverage == 15:
+            return adjust_price_to_tick(current_price * 1.045, tick_size)  # 上涨4.5% 止损
+        elif leverage == 20:
+            return adjust_price_to_tick(current_price * 1.04, tick_size)  # 上涨4% 止损
         elif leverage == 25:
             return adjust_price_to_tick(current_price * 1.03, tick_size)  # 上涨3% 止损
         elif leverage == 30:
@@ -100,6 +108,7 @@ def set_leverage(inst_id, lever, pos_side):
     status_code, response = send_request('POST', request_path, body)
     if status_code == 200 and response['code'] == '0':
         print(f"杠杆倍数: {lever}x")
+        print(f"方向: {pos_side}")
         return response
     else:
         raise Exception(f"杠杆设置失败: {response}")
