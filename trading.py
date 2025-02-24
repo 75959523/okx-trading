@@ -6,7 +6,7 @@ def calculate_stop_loss_price(pos_side, leverage, current_price, tick_size):
     if pos_side == "long":
         # 做多时的止损价格（市场下跌）
         if leverage == 10:
-            return adjust_price_to_tick(current_price * 0.93, tick_size)  # 下跌7% 止损
+            return adjust_price_to_tick(current_price * 0.925, tick_size)  # 下跌7.5% 止损
         elif leverage == 15:
             return adjust_price_to_tick(current_price * 0.955, tick_size)  # 下跌4.5% 止损
         elif leverage == 20:
@@ -20,7 +20,7 @@ def calculate_stop_loss_price(pos_side, leverage, current_price, tick_size):
     elif pos_side == "short":
         # 做空时的止损价格（市场上涨）
         if leverage == 10:
-            return adjust_price_to_tick(current_price * 1.07, tick_size)  # 上涨7% 止损
+            return adjust_price_to_tick(current_price * 1.075, tick_size)  # 上涨7.5% 止损
         elif leverage == 15:
             return adjust_price_to_tick(current_price * 1.045, tick_size)  # 上涨4.5% 止损
         elif leverage == 20:
