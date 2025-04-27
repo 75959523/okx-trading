@@ -6,31 +6,31 @@ def calculate_stop_loss_price(pos_side, leverage, current_price, tick_size):
     if pos_side == "long":
         # 做多时的止损价格（市场下跌）
         if leverage == 10:
-            return adjust_price_to_tick(current_price * 0.925, tick_size)  # 下跌7.5% 止损
+            return adjust_price_to_tick(current_price * 0.909, tick_size)  # 下跌9.1% 止损
         elif leverage == 15:
-            return adjust_price_to_tick(current_price * 0.942, tick_size)  # 下跌5.8% 止损
+            return adjust_price_to_tick(current_price * 0.939, tick_size)  # 下跌6.1% 止损
         elif leverage == 20:
             return adjust_price_to_tick(current_price * 0.96, tick_size)  # 下跌4% 止损
         elif leverage == 25:
-            return adjust_price_to_tick(current_price * 0.966, tick_size)  # 下跌3.4% 止损
+            return adjust_price_to_tick(current_price * 0.965, tick_size)  # 下跌3.5% 止损
         elif leverage == 30:
-            return adjust_price_to_tick(current_price * 0.975, tick_size)  # 下跌2.5% 止损
+            return adjust_price_to_tick(current_price * 0.972, tick_size)  # 下跌2.8% 止损
         else:
-            return adjust_price_to_tick(current_price * 0.95, tick_size)  # 默认下跌5% 止损
+            return adjust_price_to_tick(current_price * 0.98, tick_size)  # 默认下跌2% 止损
     elif pos_side == "short":
         # 做空时的止损价格（市场上涨）
         if leverage == 10:
-            return adjust_price_to_tick(current_price * 1.075, tick_size)  # 上涨7.5% 止损
+            return adjust_price_to_tick(current_price * 1.091, tick_size)  # 上涨9.1% 止损
         elif leverage == 15:
-            return adjust_price_to_tick(current_price * 1.058, tick_size)  # 上涨5.8% 止损
+            return adjust_price_to_tick(current_price * 1.061, tick_size)  # 上涨6.1% 止损
         elif leverage == 20:
             return adjust_price_to_tick(current_price * 1.04, tick_size)  # 上涨4% 止损
         elif leverage == 25:
-            return adjust_price_to_tick(current_price * 1.034, tick_size)  # 上涨3.4% 止损
+            return adjust_price_to_tick(current_price * 1.035, tick_size)  # 上涨3.5% 止损
         elif leverage == 30:
-            return adjust_price_to_tick(current_price * 1.025, tick_size)  # 上涨2.5% 止损
+            return adjust_price_to_tick(current_price * 1.028, tick_size)  # 上涨2.8% 止损
         else:
-            return adjust_price_to_tick(current_price * 1.05, tick_size)  # 默认上涨5% 止损
+            return adjust_price_to_tick(current_price * 1.02, tick_size)  # 默认上涨2% 止损
 
 def place_order_for_coin(coin):
     try:
