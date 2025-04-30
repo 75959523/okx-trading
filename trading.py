@@ -8,7 +8,7 @@ def calculate_stop_loss_price(pos_side, leverage, current_price, tick_size):
         if leverage == 10:
             return adjust_price_to_tick(current_price * 0.909, tick_size)  # 下跌9.1% 止损
         elif leverage == 15:
-            return adjust_price_to_tick(current_price * 0.941, tick_size)  # 下跌5.9% 止损
+            return adjust_price_to_tick(current_price * 0.942, tick_size)  # 下跌5.8% 止损
         elif leverage == 20:
             return adjust_price_to_tick(current_price * 0.955, tick_size)  # 下跌4.5% 止损
         elif leverage == 25:
@@ -22,7 +22,7 @@ def calculate_stop_loss_price(pos_side, leverage, current_price, tick_size):
         if leverage == 10:
             return adjust_price_to_tick(current_price * 1.091, tick_size)  # 上涨9.1% 止损
         elif leverage == 15:
-            return adjust_price_to_tick(current_price * 1.059, tick_size)  # 上涨5.9% 止损
+            return adjust_price_to_tick(current_price * 1.058, tick_size)  # 上涨5.8% 止损
         elif leverage == 20:
             return adjust_price_to_tick(current_price * 1.045, tick_size)  # 上涨4.5% 止损
         elif leverage == 25:
