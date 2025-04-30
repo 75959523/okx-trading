@@ -2,8 +2,8 @@ from trading import place_order_for_coin
 import concurrent.futures
 
 coins = [
-    {"inst_id": "BTC-USDT-SWAP", "leverage": 25, "notional": 1000, "pos_side": "long"},
-    {"inst_id": "SOL-USDT-SWAP", "leverage": 15, "notional": 1000, "pos_side": "long"},
+    {"inst_id": "BTC-USDT-SWAP", "leverage": 30, "notional": 500, "pos_side": "long"},
+    {"inst_id": "SOL-USDT-SWAP", "leverage": 15, "notional": 500, "pos_side": "long"},
     {"inst_id": "PEPE-USDT-SWAP", "leverage": 15, "notional": 500, "pos_side": "long"},
 
     # {"inst_id": "ETH-USDT-SWAP", "leverage": 15, "notional": 500, "pos_side": "long"},
